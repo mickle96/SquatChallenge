@@ -1,90 +1,82 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>75 Squat Challenge</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Squat Challenge</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #fff1f5;
+    color: #4a044e;
+    text-align: center;
+    padding: 15px;
+    margin: 0;
+  }
+  h1 { color: #be185d; margin-bottom: 10px; }
+  .screen { display: none; }
+  .active { display: block; }
+  .card {
+    background: white;
+    padding: 15px;
+    border-radius: 14px;
+    margin: 10px auto;
+    max-width: 400px;
+    box-shadow: 0 6px 18px rgba(190, 24, 93, 0.15);
+  }
+  .number { font-size: 2rem; margin: 8px 0; color: #be185d; }
+  input { padding: 12px; width: 80%; border-radius: 8px; border: 1px solid #f9a8d4; margin-bottom: 10px; font-size: 1rem; }
+  button { margin: 6px; padding: 12px 18px; font-size: 1rem; border: none; border-radius: 999px; cursor: pointer; }
+  .primary { background: #ec4899; color: white; }
+  .secondary { background: #f472b6; color: #4a044e; }
+  .danger { background: #9f1239; color: white; }
+  .levels { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+  .levelBtn { font-size: 1rem; width: 100%; }
+  
+  /* Main tracker buttons layout */
+  .today-buttons { display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 5px; }
+  .today-buttons button { flex: 1 1 30%; margin: 4px; }
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff1f5;
-      color: #4a044e;
-      text-align: center;
-      padding: 30px;
-    }
+  /* Leaderboard button spacing */
+  #leaderboardBtn { width: 100%; margin-top: 10px; }
 
-    h1 { color: #be185d; }
-
-    .screen {
-      display: none;
-    }
-
-    .active {
-      display: block;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      margin: 20px auto;
-      max-width: 420px;
-      box-shadow: 0 6px 18px rgba(190, 24, 93, 0.15);
-    }
-
-    .number {
-      font-size: 2.2rem;
-      margin: 10px 0;
-      color: #be185d;
-    }
-
-    input {
-      padding: 10px;
-      width: 70%;
-      border-radius: 8px;
-      border: 1px solid #f9a8d4;
-      margin-bottom: 10px;
-    }
-
-    button {
-      margin: 6px;
-      padding: 12px 18px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-    }
-
-    .primary { background: #ec4899; color: white; }
-    .secondary { background: #f472b6; color: #4a044e; }
-    .danger { background: #9f1239; color: white; }
-  </style>
+  @media(max-width: 360px) {
+    .number { font-size: 1.6rem; }
+    input { width: 90%; }
+    button { padding: 10px 14px; font-size: 0.9rem; }
+  }
+</style>
 </head>
-
 <body>
 
-<!-- NAME SCREEN (FIRST TIME ONLY) -->
+<!-- NAME & LEVEL SCREEN -->
 <div id="nameScreen" class="screen">
   <h1>🎀 Welcome</h1>
   <div class="card">
     <h2>Enter your name</h2>
     <input id="nameInput" placeholder="Your name" />
-    <br />
-    <button class="primary" onclick="saveName()">Start Challenge</button>
+    <h3>Select your challenge level</h3>
+    <div class="levels">
+      <button class="levelBtn primary" data-value="56">Power – 56/day</button>
+      <button class="levelBtn primary" data-value="112">Super – 112/day</button>
+      <button class="levelBtn primary" data-value="174">Ultra – 174/day</button>
+    </div>
+    <button class="primary" id="startBtn">Start Challenge</button>
   </div>
 </div>
 
-<!-- MAIN TRACKER -->
+<!-- MAIN TRACKER SCREEN -->
 <div id="mainScreen" class="screen">
-  <h1>🎀 75 Squat Challenge</h1>
-
+  <h1>🎀 Squat Challenge</h1>
   <div class="card">
     <h2>Today</h2>
     <div class="number" id="todayCount">0 / 75</div>
-    <button class="primary" onclick="addSquats(1)">+1</button>
-    <button class="primary" onclick="addSquats(5)">+5</button>
-    <button class="primary" onclick="addSquats(10)">+10</button>
+    <div class="today-buttons">
+      <button class="primary" onclick="addSquats(1)">+1</button>
+      <button class="primary" onclick="addSquats(5)">+5</button>
+      <button class="primary" onclick="addSquats(10)">+10</button>
+    </div>
   </div>
 
   <div class="card">
@@ -95,17 +87,13 @@
     <div class="number" id="daysCompleted">0 / 30</div>
   </div>
 
-  <button class="secondary" onclick="showLeaderboard()">View Leaderboard</button>
+  <button class="secondary" id="leaderboardBtn" onclick="showLeaderboard()">View Leaderboard</button>
 </div>
 
 <!-- LEADERBOARD SCREEN -->
 <div id="leaderboardScreen" class="screen">
   <h1>🏆 Leaderboard</h1>
-
-  <div class="card" id="leaderboard">
-    Loading…
-  </div>
-
+  <div class="card" id="leaderboard">Loading…</div>
   <button class="secondary" onclick="showMain()">Back</button>
 </div>
 
