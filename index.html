@@ -7,27 +7,41 @@
 <title>Squat Challenge</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
-    background: #fff1f5;
+    font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #ffe4ef 0%, #fff1f5 55%, #fff7fb 100%);
     color: #4a044e;
     text-align: center;
-    padding: 15px;
+    padding: 14px 12px 24px;
     margin: 0;
   }
-  h1 { color: #be185d; margin-bottom: 10px; }
+  h1 { color: #be185d; margin: 6px 0 8px; letter-spacing: 0.3px; }
+  h2 { margin: 6px 0 8px; }
+  h3 { margin: 10px 0 8px; font-weight: 600; }
   .screen { display: none; }
-  .active { display: block; }
+  .active { display: block; animation: screenFade 0.25s ease; }
   .card {
     background: white;
-    padding: 15px;
+    padding: 16px 14px;
     border-radius: 14px;
-    margin: 10px auto;
-    max-width: 400px;
-    box-shadow: 0 6px 18px rgba(190, 24, 93, 0.15);
+    margin: 10px auto 12px;
+    max-width: 440px;
+    box-shadow: 0 8px 22px rgba(190, 24, 93, 0.12);
+    border: 1px solid rgba(190, 24, 93, 0.08);
   }
-  .number { font-size: 2rem; margin: 8px 0; color: #be185d; }
-  input { padding: 12px; width: 80%; border-radius: 8px; border: 1px solid #f9a8d4; margin-bottom: 10px; font-size: 1rem; }
-  button { margin: 6px; padding: 12px 18px; font-size: 1rem; border: none; border-radius: 999px; cursor: pointer; }
+  .active .card { animation: cardRise 0.3s ease; }
+  .number { font-size: 2.1rem; margin: 6px 0; color: #be185d; font-weight: 700; }
+  input {
+    padding: 12px;
+    width: 90%;
+    border-radius: 10px;
+    border: 1px solid #f9a8d4;
+    margin: 6px 0 10px;
+    font-size: 1rem;
+    outline: none;
+    background: #fff7fb;
+  }
+  input:focus { border-color: #ec4899; box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15); }
+  button { margin: 6px 4px; padding: 12px 18px; font-size: 1rem; border: none; border-radius: 999px; cursor: pointer; }
   .primary { background: #ec4899; color: white; }
   .secondary { background: #f472b6; color: #4a044e; }
   .danger { background: #9f1239; color: white; }
@@ -35,34 +49,115 @@
   .levelBtn { font-size: 1rem; width: 100%; }
   
   /* Main tracker buttons layout */
-  .today-buttons { display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 5px; }
-  .today-buttons button { flex: 1 1 30%; margin: 4px; }
+  .today-buttons { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .today-buttons button { flex: 1 1 45%; margin: 0; }
 
   /* Leaderboard button spacing */
-  #leaderboardBtn { width: 100%; margin-top: 10px; }
+  #leaderboardBtn { width: 100%; margin-top: 8px; }
+  .leaderboard-cta {
+    background: linear-gradient(135deg, #f472b6, #ec4899);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 10px 20px rgba(236, 72, 153, 0.25);
+  }
+
+  .today-card {
+    position: sticky;
+    top: 8px;
+    z-index: 2;
+  }
+
+  /* Leaderboard filter buttons */
+  .filter-buttons { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+  .filter-btn { flex: 1 1 46%; min-width: 90px; }
+  .filter-btn.active { background: #be185d; color: white; }
+
+  @keyframes screenFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes cardRise {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
   @media(max-width: 360px) {
-    .number { font-size: 1.6rem; }
-    input { width: 90%; }
-    button { padding: 10px 14px; font-size: 0.9rem; }
+    .number { font-size: 1.8rem; }
+    button { padding: 10px 14px; font-size: 0.92rem; }
+  }
+</style>
+
+<style>
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(190, 24, 93, 0.5);
+    backdrop-filter: blur(5px);
+  }
+  .modal-content {
+    background: white;
+    margin: 20% auto;
+    padding: 20px;
+    border-radius: 14px;
+    width: 80%;
+    max-width: 300px;
+    box-shadow: 0 6px 18px rgba(190, 24, 93, 0.15);
+    text-align: center;
+  }
+  .modal-content p {
+    margin-bottom: 20px;
+    color: #4a044e;
+  }
+  .modal-content button {
+    margin: 0 10px;
   }
 </style>
 </head>
 <body>
 
-<!-- NAME & LEVEL SCREEN -->
-<div id="nameScreen" class="screen">
+<!-- WELCOME SCREEN -->
+<div id="welcomeScreen" class="screen">
   <h1>🎀 Welcome</h1>
+  <div class="card today-card">
+    <h2>Are you a new or existing user?</h2>
+    <button class="primary" id="newUserOption">New User</button>
+    <button class="secondary" id="existingUserOption">Existing User</button>
+  </div>
+</div>
+
+<!-- NEW USER SCREEN -->
+<div id="newUserScreen" class="screen">
+  <h1>🎀 Create Account</h1>
   <div class="card">
-    <h2>Enter your name</h2>
-    <input id="nameInput" placeholder="Your name" />
+    <h2>Enter your first and last name</h2>
+    <input id="newFirstNameInput" placeholder="First name" />
+    <input id="newLastNameInput" placeholder="Last name" />
     <h3>Select your challenge level</h3>
     <div class="levels">
       <button class="levelBtn primary" data-value="56">Power – 56/day</button>
       <button class="levelBtn primary" data-value="112">Super – 112/day</button>
       <button class="levelBtn primary" data-value="174">Ultra – 174/day</button>
     </div>
-    <button class="primary" id="startBtn">Start Challenge</button>
+    <button class="primary" id="createBtn">Start Challenge</button>
+    <button class="secondary" onclick="showWelcome()">Back</button>
+  </div>
+</div>
+
+<!-- EXISTING USER SCREEN -->
+<div id="existingUserScreen" class="screen">
+  <h1>🎀 Login</h1>
+  <div class="card">
+    <h2>Enter your first and last name</h2>
+    <input id="existingFirstNameInput" placeholder="First name" />
+    <input id="existingLastNameInput" placeholder="Last name" />
+    <button class="primary" id="loginBtn">Login</button>
+    <button class="secondary" onclick="showWelcome()">Back</button>
   </div>
 </div>
 
@@ -76,7 +171,9 @@
       <button class="primary" onclick="addSquats(1)">+1</button>
       <button class="primary" onclick="addSquats(5)">+5</button>
       <button class="primary" onclick="addSquats(10)">+10</button>
+      <button class="secondary" onclick="undoLast()">Undo</button>
     </div>
+    <button class="danger" onclick="resetToday()" style="margin-top: 10px; width: 100%;">Reset Today</button>
   </div>
 
   <div class="card">
@@ -87,14 +184,45 @@
     <div class="number" id="daysCompleted">0 / 30</div>
   </div>
 
-  <button class="secondary" id="leaderboardBtn" onclick="showLeaderboard()">View Leaderboard</button>
+  <button class="leaderboard-cta" id="leaderboardBtn" onclick="showLeaderboard()">View Leaderboard</button>
 </div>
 
 <!-- LEADERBOARD SCREEN -->
 <div id="leaderboardScreen" class="screen">
   <h1>🏆 Leaderboard</h1>
-  <div class="card" id="leaderboard">Loading…</div>
+  <div class="card">
+    <h3>Level</h3>
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-level="all">All</button>
+      <button class="filter-btn" data-level="56">Power</button>
+      <button class="filter-btn" data-level="112">Super</button>
+      <button class="filter-btn" data-level="174">Ultra</button>
+    </div>
+    <h3>Type</h3>
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-type="overall">Overall</button>
+      <button class="filter-btn" data-type="daily">Daily</button>
+    </div>
+    <div id="leaderboard">Loading…</div>
+  </div>
   <button class="secondary" onclick="showMain()">Back</button>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirmModal" class="modal">
+  <div class="modal-content">
+    <p id="confirmMessage"></p>
+    <button id="confirmYes" class="primary">Yes</button>
+    <button id="confirmNo" class="secondary">No</button>
+  </div>
+</div>
+
+<!-- COMPLETION MODAL -->
+<div id="completeModal" class="modal">
+  <div class="modal-content">
+    <p id="completeMessage"></p>
+    <button id="completeOk" class="primary">Nice!</button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
